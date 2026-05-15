@@ -20,12 +20,25 @@ const BaseNode = ({
     return initialValues;
   });
 
-  const handleChange = (fieldName, value) => {
+  const [dynamicHandles, setDynamicHandles] = useState(() => {
+    let initial = [];
+    fields.forEach((field) => {
+      if (field.generateHandles)
+        initial = [...initial, ...field.generateHandles(field.defaultValue || "")];
+    });
+    return initial;
+  });
+
+  const handleChange = (field, value) => {
     setValues((prevValues) => ({
       ...prevValues,
-      [fieldName]: value,
+      [field.key]: value,
     }));
+    if (field.generateHandles)
+      setDynamicHandles(field.generateHandles(value));
   };
+
+  const allHandles = [...handles, ...dynamicHandles];
 
   // Width resize based on text length
   const dynamicWidth =
@@ -53,7 +66,7 @@ const BaseNode = ({
       style={{ width: dynamicWidth, transition: "width 0.15s ease" }}
     >
       {/* Handles */}
-      {handles.map((handle) => (
+      {allHandles.map((handle) => (
         <Handle
           key={handle.id}
           type={handle.type}
@@ -87,7 +100,7 @@ const BaseNode = ({
             {field.type === "select" ? (
               <select
                 value={values[field.key]}
-                onChange={(e) => handleChange(field.key, e.target.value)}
+                onChange={(e) => handleChange(field, e.target.value)}
               >
                 {field.options?.map((opt) => (
                   <option key={opt.value} value={opt.value}>
@@ -99,13 +112,13 @@ const BaseNode = ({
               <textarea
                 value={values[field.key]}
                 rows={getRows(values[field.key])}
-                onChange={(e) => handleChange(field.key, e.target.value)}
+                onChange={(e) => handleChange(field, e.target.value)}
               />
             ) : (
               <input
                 type={field.type || "text"}
                 value={values[field.key]}
-                onChange={(e) => handleChange(field.key, e.target.value)}
+                onChange={(e) => handleChange(field, e.target.value)}
               />
             )}
           </div>
