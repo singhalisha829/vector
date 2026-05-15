@@ -10,6 +10,7 @@ const BaseNode = ({
   handles = [],
   children,
   width = 220,
+  autoResize = false,
 }) => {
   const [values, setValues] = useState(() => {
     const initialValues = {};
@@ -26,8 +27,31 @@ const BaseNode = ({
     }));
   };
 
+  // Width resize based on text length
+  const dynamicWidth =
+    autoResize && values.text
+      ? Math.min(Math.max(values.text.length * 8 + 120, 220), 500)
+      : width;
+
+  // Dynamic rows calculation
+  const getRows = (text = "") => {
+    const lines = text.split("\n");
+
+    let rows = 1;
+
+    lines.forEach((line) => {
+      // Approx chars per line before wrap
+      rows += Math.floor(line.length / 60);
+    });
+
+    return Math.min(Math.max(rows, 1), 12);
+  };
+
   return (
-    <div className="node-card" style={{ width }}>
+    <div
+      className="node-card"
+      style={{ width: dynamicWidth, transition: "width 0.15s ease" }}
+    >
       {/* Handles */}
       {handles.map((handle) => (
         <Handle
@@ -74,6 +98,7 @@ const BaseNode = ({
             ) : field.type === "textarea" ? (
               <textarea
                 value={values[field.key]}
+                rows={getRows(values[field.key])}
                 onChange={(e) => handleChange(field.key, e.target.value)}
               />
             ) : (
