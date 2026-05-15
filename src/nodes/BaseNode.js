@@ -4,11 +4,12 @@ import { Handle } from "reactflow";
 const BaseNode = ({
   id,
   title,
+  icon,
+  color = "#6366F1",
   fields = [],
   handles = [],
   children,
-  width = 200,
-  height = 80,
+  width = 220,
 }) => {
   const [values, setValues] = useState(() => {
     const initialValues = {};
@@ -26,7 +27,7 @@ const BaseNode = ({
   };
 
   return (
-    <div style={{ width: width, minHeight: height, border: "1px solid black" }}>
+    <div className="node-card" style={{ width }}>
       {/* Handles */}
       {handles.map((handle) => (
         <Handle
@@ -34,51 +35,57 @@ const BaseNode = ({
           type={handle.type}
           position={handle.position}
           id={`${id}-${handle.id}`}
-          style={handle.style}
+          style={{
+            background: color,
+            border: "2px solid white",
+            width: 10,
+            height: 10,
+            boxShadow: "0 0 0 1px rgba(0,0,0,0.15)",
+            ...handle.style,
+          }}
         />
       ))}
 
-      {/* Title */}
-      <div>
+      {/* title */}
+      <div className="node-header" style={{ background: color }}>
+        {icon && <span className="node-header-icon">{icon}</span>}
         <span>{title}</span>
       </div>
 
-      {/* Custom Content */}
-      {children}
+      <div className="node-body">
+        {/* custom content */}
+        {children}
 
-      {/* Fields */}
-      {fields.length > 0 && (
-        <div>
-          {fields.map((field) => (
-            <label key={field.key}>
-              {field.label}:
-              {field.type === "select" ? (
-                <select
-                  value={values[field.key]}
-                  onChange={(e) => handleChange(field.key, e.target.value)}
-                >
-                  {field.options?.map((option) => (
-                    <option key={option.name} value={option.value}>
-                      {option.name}
-                    </option>
-                  ))}
-                </select>
-              ) : field.type === "textarea" ? (
-                <textarea
-                  value={values[field.key]}
-                  onChange={(e) => handleChange(field.key, e.target.value)}
-                />
-              ) : (
-                <input
-                  type={field.type || "text"}
-                  value={values[field.key]}
-                  onChange={(e) => handleChange(field.key, e.target.value)}
-                />
-              )}
-            </label>
-          ))}
-        </div>
-      )}
+        {/* fields */}
+        {fields.map((field) => (
+          <div key={field.key} className="node-field">
+            <span className="node-field-label">{field.label}</span>
+            {field.type === "select" ? (
+              <select
+                value={values[field.key]}
+                onChange={(e) => handleChange(field.key, e.target.value)}
+              >
+                {field.options?.map((opt) => (
+                  <option key={opt.value} value={opt.value}>
+                    {opt.name}
+                  </option>
+                ))}
+              </select>
+            ) : field.type === "textarea" ? (
+              <textarea
+                value={values[field.key]}
+                onChange={(e) => handleChange(field.key, e.target.value)}
+              />
+            ) : (
+              <input
+                type={field.type || "text"}
+                value={values[field.key]}
+                onChange={(e) => handleChange(field.key, e.target.value)}
+              />
+            )}
+          </div>
+        ))}
+      </div>
     </div>
   );
 };

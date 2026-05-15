@@ -1,13 +1,292 @@
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+*, *::before, *::after {
+  box-sizing: border-box;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', 'Roboto', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background: #F1F5F9;
+}
+
+/* ── Node Card ─────────────────────────────────────── */
+.node-card {
+  background: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.10), 0 0 0 1px rgba(0,0,0,0.04);
+  overflow: visible;
+  position: relative;
+}
+
+.node-header {
+  padding: 7px 12px;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 11px;
+  font-weight: 700;
+  color: white;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  border-radius: 10px 10px 0 0;
+}
+
+.node-header-icon {
+  width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.25);
+  border-radius: 4px;
+  font-size: 11px;
+}
+
+.node-body {
+  padding: 10px 12px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* ── Fields ─────────────────────────────────────────── */
+.node-field {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.node-field-label {
+  font-size: 10px;
+  font-weight: 600;
+  color: #94A3B8;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.node-field input,
+.node-field select,
+.node-field textarea {
+  border: 1.5px solid #E2E8F0;
+  border-radius: 6px;
+  padding: 5px 8px;
+  font-size: 12px;
+  color: #1E293B;
+  background: #F8FAFC;
+  width: 100%;
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+  font-family: inherit;
+}
+
+.node-field input:focus,
+.node-field select:focus,
+.node-field textarea:focus {
+  border-color: #6366F1;
+  background: #ffffff;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.12);
+}
+
+.node-field textarea {
+  resize: vertical;
+  min-height: 60px;
+  line-height: 1.4;
+}
+
+/* ── Handle Labels ───────────────────────────────────── */
+.handle-label {
+  position: absolute;
+  font-size: 9px;
+  font-weight: 600;
+  color: #94A3B8;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  pointer-events: none;
+  white-space: nowrap;
+  transform: translateY(-50%);
+}
+
+.handle-label-left {
+  left: 14px;
+}
+
+.handle-label-right {
+  right: 14px;
+}
+
+/* Toolbar Sidebar */
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  width: 220px;
+  background: #0F172A;
+  flex-shrink: 0;
+  overflow: hidden;
+  height: 100vh;
+}
+
+.sidebar-header {
+  padding: 18px 16px 14px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.sidebar-logo {
+  color: #513DD9;
+  font-weight: 500;
+  font-size: 17px;
+}
+
+.sidebar-subtitle {
+  color: #475569;
+  font-size: 10px;
+  margin: 3px 0 0;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+.sidebar-nodes {
+  flex: 1;
+  overflow-y: auto;
+  padding: 14px 10px;
+}
+
+.sidebar-section-label {
+  color: #334155;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin: 0 0 8px 4px;
+}
+
+.sidebar-nodes::-webkit-scrollbar {
+  width: 4px;
+}
+
+.sidebar-nodes::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.sidebar-nodes::-webkit-scrollbar-thumb {
+  background: #1E293B;
+  border-radius: 2px;
+}
+
+/* Draggable Node Tile */
+.node-tile {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 10px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  transition: background 0.15s, border-color 0.15s;
+  cursor: grab;
+  user-select: none;
+  margin-bottom: 4px;
+}
+
+.node-tile:hover {
+  background: rgba(255, 255, 255, 0.07);
+  border-color: rgba(255, 255, 255, 0.10);
+}
+
+.node-tile:active {
+  cursor: grabbing;
+}
+
+.node-tile-icon {
+  width: 26px;
+  height: 26px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 700;
+  color: white;
+  flex-shrink: 0;
+}
+
+.node-tile-label {
+  color: #CBD5E1;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+/* Submit Button */
+.sidebar-footer {
+  padding: 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.submit-btn {
+  width: 100%;
+  padding: 10px;
+  background: linear-gradient(135deg, #6366F1, #513DD9);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  letter-spacing: 0.03em;
+  transition: opacity 0.15s, transform 0.1s;
+}
+
+.submit-btn:hover {
+  opacity: 0.9;
+}
+
+.submit-btn:active {
+  transform: scale(0.98);
+}
+
+/* Canvas */
+.canvas-wrapper {
+  flex: 1;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* ReactFlow overrides */
+.react-flow__edge-path {
+  stroke: #94A3B8;
+  stroke-width: 1.5;
+}
+
+.react-flow__edge.selected .react-flow__edge-path,
+.react-flow__edge:hover .react-flow__edge-path {
+  stroke: #6366F1;
+}
+
+.react-flow__handle {
+  transition: box-shadow 0.15s;
+}
+
+.react-flow__handle:hover {
+  box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.25);
+}
+
+.react-flow__minimap {
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+}
+
+.react-flow__controls {
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+}
+
+.react-flow__controls-button {
+  background: white;
+  border-bottom: 1px solid #E2E8F0;
+}
+
+.react-flow__controls-button:hover {
+  background: #F8FAFC;
 }
